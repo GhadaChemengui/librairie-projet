@@ -1,4 +1,34 @@
+﻿version: '3.8'
+
 services:
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: librairie_frontend
+    ports:
+      - \"8000:80\"
+    volumes:
+      - ./frontend:/var/www/html
+    depends_on:
+      - backend
+      - db
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: librairie_backend
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - db
+    environment:
+      - APP_ENV=local
+
   db:
     image: mysql:8.0
     container_name: librairie_db
@@ -9,50 +39,21 @@ services:
       MYSQL_USER: dev
       MYSQL_PASSWORD: dev
     ports:
-      - "3307:3306"    # ← CHANGEZ 3306 EN 3307
+      - \"3307:3306\"
     volumes:
       - db_data:/var/lib/mysql
-    networks:
-      - librairie-network
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: librairie_frontend
-    restart: unless-stopped
-    working_dir: /var/www/html
-    volumes:
-      - ./frontend:/var/www/html
-    ports:
-      - "8000:80"
-    environment:
-      DB_HOST: db
-      DB_DATABASE: librairie
-      DB_USERNAME: dev
-      DB_PASSWORD: dev
-    networks:
-      - librairie-network
-    depends_on:
-      - db
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: librairie_pma
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - \"8080:80\"
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
-    networks:
-      - librairie-network
     depends_on:
       - db
 
 volumes:
   db_data:
-
-networks:
-  librairie-network:
-    driver: bridge
