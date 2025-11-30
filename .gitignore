@@ -1,0 +1,29 @@
+﻿# Environment
+.env
+.env.backup
+.env.example
+
+# Laravel
+/vendor/
+/node_modules/
+/storage/framework/cache/
+/storage/framework/views/
+/storage/logs/
+/bootstrap/cache/
+
+# Docker
+docker-data/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Cache
+.phpunit.result.cache
